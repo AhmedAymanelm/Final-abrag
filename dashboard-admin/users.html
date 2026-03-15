@@ -168,7 +168,7 @@
     function filterUsers() {
       const q = document.getElementById('searchInput').value.toLowerCase();
       const filtered = allUsers.filter(u =>
-        `${u.first_name} ${u.last_name} ${u.email}`.toLowerCase().includes(q)
+        `${u.fullname} ${u.email}`.toLowerCase().includes(q)
       );
       renderUsers(filtered);
     }
@@ -180,8 +180,8 @@
         return;
       }
       tbody.innerHTML = users.map(u => {
-        const name = `${u.first_name || ''} ${u.last_name || ''}`.trim() || 'N/A';
-        const initials = (u.first_name?.[0] || '') + (u.last_name?.[0] || '');
+        const name = u.fullname || 'N/A';
+        const initials = u.fullname ? u.fullname.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : '?';
         const statusBadge = u.is_active
           ? `<span class="badge badge-success">Active</span>`
           : `<span class="badge badge-danger">Inactive</span>`;
@@ -213,7 +213,7 @@
       if (!res) return;
       const u = await res.json();
 
-      document.getElementById('modalUserName').textContent = `${u.first_name} ${u.last_name}`;
+      document.getElementById('modalUserName').textContent = u.fullname;
       document.getElementById('modalUserEmail').textContent = u.email;
 
       document.getElementById('modalDetails').innerHTML = `

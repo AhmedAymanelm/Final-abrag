@@ -34,8 +34,7 @@ async def register_user(user_data: UserRegisterRequest, background_tasks: Backgr
     new_user = User(
         email=user_data.email,
         hashed_password=hash_password(user_data.password),
-        first_name=user_data.first_name,
-        last_name=user_data.last_name,
+        fullname=user_data.fullname,
         date_of_birth=user_data.date_of_birth,
         place_of_birth=user_data.place_of_birth,
         time_of_birth=user_data.time_of_birth,

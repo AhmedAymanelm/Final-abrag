@@ -37,8 +37,7 @@ async def run():
             user = User(
                 email="admin@abrag.com",
                 hashed_password=new_hp,
-                first_name="Admin",
-                last_name="User",
+                fullname="Admin User",
                 date_of_birth=date(1990, 1, 1),
                 place_of_birth="Cairo",
                 is_active=True,

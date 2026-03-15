@@ -18,8 +18,7 @@ class User(Base):
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     email = Column(String, unique=True, nullable=False)
     hashed_password = Column(String, nullable=False)
-    first_name = Column(String, nullable=False)
-    last_name = Column(String, nullable=False)
+    fullname = Column(String, nullable=False)
     date_of_birth = Column(Date, nullable=False)
     place_of_birth = Column(String, nullable=False)
     is_active = Column(Boolean, default=True)
@@ -54,10 +53,10 @@ async def run():
         if not row:
             uid = str(uuid.uuid4())
             await session.execute(text(
-                "INSERT INTO users (id, email, hashed_password, first_name, last_name, date_of_birth, place_of_birth, is_active, is_verified, created_at) "
-                "VALUES (:id, :email, :hp, :fn, :ln, :dob, :pob, :ia, :iv, :ca)"
+                "INSERT INTO users (id, email, hashed_password, fullname, date_of_birth, place_of_birth, is_active, is_verified, created_at) "
+                "VALUES (:id, :email, :hp, :fullname, :dob, :pob, :ia, :iv, :ca)"
             ), {
-                "id": uid, "email": "admin@abrag.com", "hp": hp, "fn": "Admin", "ln": "User", 
+                "id": uid, "email": "admin@abrag.com", "hp": hp, "fullname": "Admin User", 
                 "dob": date(1990, 1, 1), "pob": "Cairo", "ia": True, "iv": True, "ca": datetime.utcnow()
             })
             print("CREATED")

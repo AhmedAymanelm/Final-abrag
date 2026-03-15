@@ -9,8 +9,7 @@ from pydantic import BaseModel, EmailStr, field_validator
 class UserRegisterRequest(BaseModel):
     email: EmailStr
     password: str
-    first_name: str
-    last_name: str
+    fullname: str
     date_of_birth: date
     place_of_birth: str
     time_of_birth: Optional[time] = None
@@ -27,9 +26,9 @@ class UserRegisterRequest(BaseModel):
             raise ValueError("Password must contain at least one number")
         return v
 
-    @field_validator("first_name", "last_name")
+    @field_validator("fullname")
     @classmethod
-    def validate_names(cls, v):
+    def validate_name(cls, v):
         if not v or len(v.strip()) < 2:
             raise ValueError("Name must be at least 2 characters")
         return v.strip()
@@ -38,8 +37,7 @@ class UserRegisterRequest(BaseModel):
 class UserResponse(BaseModel):
     id: UUID
     email: str
-    first_name: str
-    last_name: str
+    fullname: str
     date_of_birth: date
     place_of_birth: str
     time_of_birth: Optional[time] = None

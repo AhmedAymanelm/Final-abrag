@@ -169,8 +169,7 @@ async def get_users(
         {
             "id": str(u.id),
             "email": u.email,
-            "first_name": u.first_name,
-            "last_name": u.last_name,
+            "fullname": u.fullname,
             "date_of_birth": str(u.date_of_birth) if u.date_of_birth else None,
             "place_of_birth": u.place_of_birth,
             "is_active": u.is_active,
@@ -204,8 +203,7 @@ async def get_user_details(
     return {
         "id": str(user.id),
         "email": user.email,
-        "first_name": user.first_name,
-        "last_name": user.last_name,
+        "fullname": user.fullname,
         "date_of_birth": str(user.date_of_birth) if user.date_of_birth else None,
         "place_of_birth": user.place_of_birth,
         "time_of_birth": str(user.time_of_birth) if user.time_of_birth else None,
@@ -293,7 +291,7 @@ async def get_user_journeys(
     # Build per-user data
     user_data = {str(u.id): {
         "id": str(u.id),
-        "name": f"{u.first_name} {u.last_name}",
+        "name": u.fullname,
         "email": u.email,
         "completed_stages": set(),
         "has_video": False,
@@ -336,7 +334,7 @@ async def get_assessments(
     admin: User = Depends(get_admin_user)
 ):
     result = await db.execute(
-        select(AssessmentHistory, User.email.label("user_email"), User.first_name, User.last_name)
+        select(AssessmentHistory, User.email.label("user_email"), User.fullname)
         .join(User, AssessmentHistory.user_id == User.id)
         .order_by(AssessmentHistory.created_at.desc())
         .offset(skip)
@@ -349,7 +347,7 @@ async def get_assessments(
             "id": str(item.AssessmentHistory.id),
             "user_id": str(item.AssessmentHistory.user_id),
             "user_email": item.user_email,
-            "user_name": f"{item.first_name} {item.last_name}",
+            "user_name": item.fullname,
             "type": item.AssessmentHistory.assessment_type,
             "has_video": item.AssessmentHistory.video_url is not None,
             "video_url": item.AssessmentHistory.video_url,
@@ -366,7 +364,7 @@ async def get_assessment_result(
     admin: User = Depends(get_admin_user)
 ):
     result = await db.execute(
-        select(AssessmentHistory, User.email.label("user_email"), User.first_name, User.last_name)
+        select(AssessmentHistory, User.email.label("user_email"), User.fullname)
         .join(User, AssessmentHistory.user_id == User.id)
         .where(AssessmentHistory.id == assessment_id)
     )
@@ -377,7 +375,7 @@ async def get_assessment_result(
     return {
         "id": str(item.AssessmentHistory.id),
         "user_email": item.user_email,
-        "user_name": f"{item.first_name} {item.last_name}",
+        "user_name": item.fullname,
         "type": item.AssessmentHistory.assessment_type,
         "input_data": item.AssessmentHistory.input_data,
         "result_data": item.AssessmentHistory.result_data,
@@ -454,7 +452,7 @@ async def list_admins(
         {
             "id": str(u.id),
             "email": u.email,
-            "name": f"{u.first_name} {u.last_name}",
+            "name": u.fullname,
             "created_at": u.created_at.isoformat() if u.created_at else None
         }
         for u in admins
@@ -475,7 +473,7 @@ async def grant_admin(
         raise HTTPException(status_code=400, detail="User is already an admin")
     user.is_admin = True
     await db.commit()
-    return {"message": f"✅ {user.first_name} ({user.email}) is now an admin"}
+    return {"message": f"✅ {user.fullname} ({user.email}) is now an admin"}
 
 
 @router.delete("/admins/revoke/{user_id}", summary="Revoke admin access from a user")
@@ -492,4 +490,4 @@ async def revoke_admin(
         raise HTTPException(status_code=400, detail="Cannot revoke your own admin access")
     user.is_admin = False
     await db.commit()
-    return {"message": f"❌ Admin access revoked for {user.first_name} ({user.email})"}
+    return {"message": f"❌ Admin access revoked for {user.fullname} ({user.email})"}
