@@ -41,8 +41,6 @@
 
   <script src="app.js"></script>
   <script>
-    const API_URL = 'http://localhost:8000'; // Change this appropriately
-
     document.getElementById('loginForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       const email = document.getElementById('email').value;
@@ -55,7 +53,7 @@
       submitBtn.disabled = true;
 
       try {
-        const response = await fetch(`${API_URL}/auth/login`, {
+        const response = await fetch(`${window.API_URL}/auth/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
