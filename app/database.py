@@ -38,7 +38,6 @@ async def init_db():
     from app.models.history import AssessmentHistory
     from app.models.payment import PaymentRecord
     from app.models.settings import SystemSetting
-    from app.models.notification import Notification, UserNotificationRead, UserDeviceToken
 
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
